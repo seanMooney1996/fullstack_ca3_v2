@@ -1,12 +1,11 @@
 import React from 'react';
-import NavBar from "./NavBar";
-import VideoHolder from "./VideoHolder";
-import GMap from "./GMap";
-import Translator from "./Translator";
+import NavBar from "../components/NavBar.js";
+import VideoHolder from "../components/VideoHolder.js";
+import GMap from "../components/GMap.js";
+import Translator from "../components/Translator.js";
 
 
-"use strict"
-class App extends React.Component {
+export default class App extends React.Component {
 
     constructor(props) {
         super(props);
@@ -77,4 +76,3 @@ class App extends React.Component {
     }
 }
 
-export default App
