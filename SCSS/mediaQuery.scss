@@ -1,0 +1,24 @@
+@mixin menuPhone() {
+  min-width: 40vw;
+}
+
+@media screen and (max-width: 768px) {
+
+  .sm_toggledNavItems {
+    @include menuPhone()
+  }
+  .sm_toggledNavItemsHidden {
+    @include menuPhone()
+  }
+  .sm_navLogo{
+    width:60vw;
+  }
+
+  .sm_navMenuButton {
+    width: 40vw;
+
+
+  }
+}
+
+

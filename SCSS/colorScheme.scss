@@ -1,0 +1,10 @@
+$white : #ffffff;
+$grey : #EEEEEE;
+$green : #76ABAE;
+$blue: #0e5b73;
+$lightBlack : #31363F;
+$black : #222831;
+
+@mixin greyOpacityBackground {
+background-color: rgba(238, 238, 238, 0.6)
+}

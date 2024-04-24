@@ -1,0 +1,11 @@
+@import "pageLayout";
+@import "navBar";
+@import "videoHolder";
+@import 'fonts';
+@import "imageSlider";
+@import "map";
+@import "mediaQuery";
+.body {
+  font-family: $fontFamily;
+}
+

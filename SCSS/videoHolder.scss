@@ -1,0 +1,49 @@
+@import "colorScheme";
+@import "Mixin";
+@mixin textSpacing()
+{
+  margin: 0 0 4px 4px;
+  padding:10px;
+}
+.sm_videoHolderContainer {
+  height:90vh;
+  display:flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  video {
+    height:100%;
+    width:100%;
+    position: absolute;
+    object-fit: cover;
+    z-index: 1;
+  }
+}
+
+.sm_textContent{
+  border-radius: 20px;
+  @include greyOpacityBackground();
+  margin-top: 2%;
+  z-index:2;
+  max-width:80%;
+  display:flex;
+  flex-direction: column;
+  align-items: flex-start;
+ p{
+  @include textSpacing();
+ }
+  h1 {
+    @include textSpacing();
+    font-size:1.8em;
+  }
+}
+.sm_videoPlayer{
+  pointer-events: none;
+}
+.sm_holdImageSlider {
+  width:100%;
+  display:flex;
+  z-index:2;
+  align-items: center;
+  margin-bottom:10%;
+}

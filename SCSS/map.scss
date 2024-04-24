@@ -1,0 +1,185 @@
+@import "Mixin";
+
+#sm_googleMap {
+  width: 100%;
+  height: 84% !important;
+  margin-top: 1px;
+  position: absolute;
+}
+
+.sm_mapHoldFull {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+#sm_navigation {
+  width: 100%;
+  height: 6%;
+  z-index:2;
+  position: relative;
+}
+
+.sm_mapNavOptions {
+  width: 100%;
+  height: 100%;
+  min-height: 50px;
+  background-color: antiquewhite;
+  display: flex;
+  border-bottom: 1px solid black;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.sm_navOptButton {
+  height: 80%;
+  width: 20%;
+  max-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 22px;
+  background-color: #0e5b73;
+
+  p {
+    text-align-all: center;
+  }
+}
+
+.sm_slideOutAnimation {
+  display:flex;
+  animation: menuSlideOut 0.4s ease-in forwards;
+}
+
+@keyframes menuSlideOut {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+.sm_slideInAnimation {
+  display: flex;
+  animation: menuSlideIn 0.4s ease-in forwards;
+}
+
+@keyframes menuSlideIn {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+#sm_mapMenu {
+  z-index:1;
+  width: 100%;
+  height: auto;
+  position: absolute;
+  padding-top: 15px;
+  flex-direction: column;
+  align-items: center;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+}
+.sm_menuItemsContainer {
+  width:85%;
+  max-width:650px;
+}
+.sm_menuItem{
+ display:flex;
+    p{
+      margin:0;
+    }
+  justify-content: space-around;
+  margin-bottom:15px;
+  align-items: center;
+  height:30px;
+}
+.sm_menuItemInner{
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+.sm_googleMapNearYou {
+  @include transitionHeight();
+  height: 50%;
+}
+.sm_displayNone{
+  display:none;
+}
+.sm_searchBar{
+  border-radius: 15px;
+  border: 1px solid black;
+  height:100%;
+  width:60%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+//https://getcssscan.com/css-buttons-examples<<--- go button css
+@mixin sm_button() {
+  appearance: none;
+  border: 1px solid rgba(27, 31, 35, .15);
+  background-color: #2ea44f;
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.sm_buttonGrey {
+@include sm_button();
+  background-color: #e7e7e7;
+  color:black;
+}
+.sm_buttonGreen {
+  @include sm_button();
+  background-color: #2ea44f;
+}
+
+  .sm_button:focus:not(:focus-visible):not(.focus-visible) {
+    box-shadow: none;
+    outline: none;
+  }
+
+  .sm_button:hover {
+    background-color: #2c974b;
+  }
+
+  .sm_button:focus {
+    box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+    outline: none;
+  }
+
+  .sm_button:disabled {
+    background-color: #94d3a2;
+    border-color: rgba(27, 31, 35, .1);
+    color: rgba(255, 255, 255, .8);
+    cursor: default;
+  }
+
+  .sm_button:active {
+    background-color: #298e46;
+    box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+  }

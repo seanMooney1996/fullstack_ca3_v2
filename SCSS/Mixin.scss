@@ -1,0 +1,22 @@
+@mixin centerFlex()
+{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+@mixin flexEnd()
+{
+  display:flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+@mixin fillParent(){
+  min-height:100%;
+  min-width:100%;
+}
+@mixin borderShadowStrong(){
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+@mixin transitionHeight(){
+  transition: height 0.5s ease;
+}

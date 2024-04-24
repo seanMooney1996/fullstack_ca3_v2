@@ -1,0 +1,28 @@
+@import "colorScheme";
+@import "Mixin";
+.sm_app {
+  max-width:100vw;
+  background-color: $grey;
+  min-height:90vh;
+  flex-direction: column;
+  top:0;
+  z-index:2;
+}
+body {
+  margin:0;
+  max-width: 100vw;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+.sm_pageContain {
+  @include fillParent();
+  max-height:100vh;
+  min-height:100vh;
+  overflow: hidden;
+  max-width: 100vw;
+}
+#root{
+  max-height:100vh;
+  max-width: 100vw;
+  overflow: hidden;
+}
