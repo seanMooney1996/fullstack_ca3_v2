@@ -312,6 +312,35 @@ body {
 .sm_infoBoxImageHolder {
   width: 100%; }
 
+.sm_nextPrevButtonHold {
+  width: 100%;
+  height: 12%;
+  background-color: rgba(255, 255, 255, 0.2);
+  z-index: 1000;
+  position: absolute;
+  bottom: 10%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center; }
+
+.sm_prevNextButtons {
+  height: 80%;
+  width: 40%;
+  background-color: red;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  right: 0; }
+
+.sm_containButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 90%;
+  max-width: 500px;
+  height: 100%;
+  align-items: center; }
+
 @media screen and (max-width: 768px) {
   .sm_toggledNavItems {
     min-width: 40vw; }
@@ -552,7 +581,7 @@ body {
   padding: 0 !important;
   margin: 0 !important;
   max-width: 400px;
-  overflow: hidden; }
+  overflow: hidden !important; }
 
 .gm-ui-hover-effect {
   display: none; }

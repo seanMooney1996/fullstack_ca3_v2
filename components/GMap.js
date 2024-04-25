@@ -9,23 +9,23 @@ export default class GMap extends React.Component {
         this.infoWindow = null;
 
         let filterTypes = {
-            "zoo": true,
-            "night_club": true,
-            "movie_theater": true,
-            "cafe": true,
-            "restaurant": true,
-            "meal_takeaway": true,
-            "liquor_store": true,
-            "clothing_store": true,
-            "shopping_mall": true,
-            "shoe_store": true,
-            "airport": true,
-            "train_station": true,
-            "subway_station": true,
-            "pharmacy": true,
-            "parking": true,
-            "tourist_attraction": true,
-            "museum": true
+            "zoo": false,
+            "night_club": false,
+            "movie_theater": false,
+            "cafe": false,
+            "restaurant": false,
+            "meal_takeaway": false,
+            "liquor_store": false,
+            "clothing_store": false,
+            "shopping_mall": false,
+            "shoe_store": false,
+            "airport": false,
+            "train_station": false,
+            "subway_station": false,
+            "pharmacy": false,
+            "parking": false,
+            "tourist_attraction": false,
+            "museum": false
         };
 
 
@@ -38,16 +38,15 @@ export default class GMap extends React.Component {
             typesForFilter: [],
             filterCategory: "",
             filterCategoryOpen: false,
-            filterTypes: filterTypes
+            filterTypes: filterTypes,
+            infoWindowOpen: false,
+            currentlyViewedItemIndex: null
         }
 
     }
 
     componentDidMount() {
         this.loadMap();
-        let menuItemHeight = document.getElementById("sm_navigation").getBoundingClientRect().height
-        document.getElementById("sm_googleMap").style.top = menuItemHeight.toString()
-
     }
 
     loadMap = () => {
@@ -60,7 +59,9 @@ export default class GMap extends React.Component {
             mapTypeId: window.google.maps.MapTypeId.ROADMAP,
             mapTypeControlOptions: {
                 mapTypeIds: ["roadmap", "hide_poi"]
-            }
+            },
+            zoomControl: false,
+            streetViewControl: false
         });
 
 
@@ -69,7 +70,6 @@ export default class GMap extends React.Component {
 
     // https://developers.google.com/maps/documentation/javascript/places <--- used documentation for nearby search code
     findPlacesInParis = (keyword) => {
-
         this.closeMenu()
         let trueTags = [];
 
@@ -89,7 +89,6 @@ export default class GMap extends React.Component {
             types: trueTags,
             keyword: keyword
         };
-
         const service = new window.google.maps.places.PlacesService(this.map);
         service.nearbySearch(request, callback);
 
@@ -103,19 +102,18 @@ export default class GMap extends React.Component {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
                 for (var i = 0; i < results.length; i++) {
                     if (results[i].geometry){
-                        createMarker(results[i])
-
                         if (!geometryFound){
-                            resultWithGeometry = i;
+                            createMarker(results[i])
                         }
                     }
                 }
             }
-            openMapMark(resultWithGeometry);
+            openMapMark(0);
         }
     }
 
     createMarker = (place) => {
+
         const icon = {
             url: place.icon,
             scaledSize: new window.google.maps.Size(35, 35)
@@ -124,8 +122,10 @@ export default class GMap extends React.Component {
             map: this.map,
             position: place.geometry.location,
             icon: icon
-        });
+        })
 
+
+        console.log(marker.position)
         if (!this.infoWindow) {
             this.infoWindow = new window.google.maps.InfoWindow();
         }
@@ -135,8 +135,7 @@ export default class GMap extends React.Component {
             infoWindowWidth = 400;
         }
         let images = '';
-        if (place.photos) {
-            console.log(place.photos);
+        if (place.photos !== undefined) {
             place.photos.forEach(photo => {
                 const imageUrl = photo.getUrl();
                 const width = infoWindowWidth;
@@ -145,33 +144,51 @@ export default class GMap extends React.Component {
                 images += `<img alt class="sm_backgroundImage" src="${imageUrl}" style="width:${width}px; height:${height}px;">`;
             });
         }
-        this.infoWindow.setOptions({
-            maxWidth:400,
-            minWidth:infoWindowWidth,
-        })
-        
         const contentString = `<div class="sm_infoWindowContent" >
-                                        <div class="sm_infoBoxImageHolder"></div>
-                                    ${images}
-                            <div><h1>${place.name}</h1></div>
+                                        <div class="sm_infoBoxImageHolder"> ${images}</div>
+                                                        <div><h1>${place.name}</h1></div>
                         </div>`
 
 
         window.google.maps.event.addListener(marker, "click", () => {
             this.infoWindow.setContent(contentString);
             this.infoWindow.open(this.map, marker);
+            if (!this.state.infoWindowOpen){
+                this.setState({infoWindowOpen:true})
+            }
+        })
+
+        window.google.maps.event.addListener(this.infoWindow, "closeclick", () => {
+            if (this.state.infoWindowOpen){
+                this.setState({infoWindowOpen:false})
+            }
         })
 
         let mapMarkers = this.state.currentMapMarkers;
+
         let mapMarkWithContent = {marker:marker,content:contentString}
         mapMarkers.push(mapMarkWithContent)
         this.setState({currentMapMarkers: mapMarkers})
     }
 
     openMapMark = (positionInArray) => {
-        console.log(this.state.currentMapMarkers)
+
+        let pos = this.state.currentMapMarkers[positionInArray].marker.position;
+
+        // let newLat = pos.lat() + 0.004
+        // let long = pos.lng()
+        //
+        // let newCenter = {
+        //     lat:newLat,
+        //     lng: long
+        // }
+        //
+        // console.log(newCenter)
         this.infoWindow.setContent(this.state.currentMapMarkers[positionInArray].content);
         this.infoWindow.open(this.map, this.state.currentMapMarkers[positionInArray].marker);
+        this.setState({infoWindowOpen:true, currentlyViewedItemIndex:positionInArray})
+        this.map.setCenter(pos)
+        this.map.setZoom(15);
     }
     removeMarkers = (place) => {
         let mapMarkers = this.state.currentMapMarkers;
@@ -267,6 +284,16 @@ export default class GMap extends React.Component {
 
         this.setState({filterTypes:allChanged})
     }
+
+    changeViewedMarker = (direction) =>{
+        let viewedMarkerIndex = this.state.currentlyViewedItemIndex +direction;
+
+        console.log(viewedMarkerIndex)
+        this.openMapMark(viewedMarkerIndex)
+        this.setState({currentlyViewedItemIndex:viewedMarkerIndex})
+    }
+
+
     // let filterTypes = {
     //     "zoo": true,
     //     "night_club": true,
@@ -573,6 +600,26 @@ export default class GMap extends React.Component {
             </div>
         )
 
+        let buttonsOnView;
+
+        if (this.state.currentlyViewedItemIndex === 0 ){
+            buttonsOnView =   (<div className="sm_containButtons"><div className="sm_prevNextButtons sm_buttonGrey"  onClick={() => this.changeViewedMarker(1)}>Next</div></div>)
+        } else if (this.state.currentlyViewedItemIndex === (this.state.currentMapMarkers.length-1)){
+            buttonsOnView = (<div className="sm_containButtons"><div className="sm_prevNextButtons sm_buttonGrey" onClick={() => this.changeViewedMarker(-1)}>Previous</div></div>)
+        } else {
+            buttonsOnView = (
+                <div className="sm_containButtons">
+                    <div className="sm_prevNextButtons sm_buttonGrey" onClick={() => this.changeViewedMarker(-1)}>Previous</div>
+                    <div className="sm_prevNextButtons sm_buttonGrey" onClick={() => this.changeViewedMarker(1)}>Next</div>
+                    </div>
+                        )
+        }
+        let nextPrevButtons = (
+                <div className="sm_nextPrevButtonHold">
+                        {buttonsOnView}
+                </div>
+        )
+
 
         return (
             <div className="sm_mapHoldFull">
@@ -585,6 +632,7 @@ export default class GMap extends React.Component {
                     </div>
                 </div>
                 {menuToRender}
+                {this.state.infoWindowOpen && this.state.currentMapMarkers.length > 1 && nextPrevButtons}
                 <div id="sm_googleMap"></div>
             </div>
         );
