@@ -281,6 +281,170 @@ body {
   padding-left: 10px;
   padding-right: 10px; }
 
+.sm_filterOptions {
+  display: flex;
+  flex-direction: column; }
+
+.sm_filterCat p {
+  margin: 0; }
+
+.sm_filterRow {
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+.sm_categoryItems {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; }
+
+.sm_filterCheckBox {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px; }
+
+.sm_categoryHolders {
+  margin-left: 60px; }
+
+.sm_labelCheckBox {
+  margin-right: 15px; }
+
+.sm_infoBoxImageHolder {
+  width: 100%; }
+
+@media screen and (max-width: 768px) {
+  .sm_toggledNavItems {
+    min-width: 40vw; }
+
+  .sm_toggledNavItemsHidden {
+    min-width: 40vw; }
+
+  .sm_navLogo {
+    width: 60vw; }
+
+  .sm_navMenuButton {
+    width: 40vw; } }
+.checkbox-wrapper-19 {
+  box-sizing: border-box;
+  --background-color: #fff;
+  --checkbox-height: 25px; }
+
+@-moz-keyframes dothabottomcheck-19 {
+  0% {
+    height: 0; }
+  100% {
+    height: calc(var(--checkbox-height) / 2); } }
+@-webkit-keyframes dothabottomcheck-19 {
+  0% {
+    height: 0; }
+  100% {
+    height: calc(var(--checkbox-height) / 2); } }
+@keyframes dothabottomcheck-19 {
+  0% {
+    height: 0; }
+  100% {
+    height: calc(var(--checkbox-height) / 2); } }
+@keyframes dothatopcheck-19 {
+  0% {
+    height: 0; }
+  50% {
+    height: 0; }
+  100% {
+    height: calc(var(--checkbox-height) * 1.2); } }
+@-webkit-keyframes dothatopcheck-19 {
+  0% {
+    height: 0; }
+  50% {
+    height: 0; }
+  100% {
+    height: calc(var(--checkbox-height) * 1.2); } }
+@-moz-keyframes dothatopcheck-19 {
+  0% {
+    height: 0; }
+  50% {
+    height: 0; }
+  100% {
+    height: calc(var(--checkbox-height) * 1.2); } }
+.checkbox-wrapper-19 input[type=checkbox] {
+  display: none; }
+
+.checkbox-wrapper-19 .check-box {
+  height: var(--checkbox-height);
+  width: var(--checkbox-height);
+  background-color: transparent;
+  border: calc(var(--checkbox-height) * .1) solid #000;
+  border-radius: 5px;
+  position: relative;
+  display: inline-block;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-transition: border-color ease 0.2s;
+  -o-transition: border-color ease 0.2s;
+  -webkit-transition: border-color ease 0.2s;
+  transition: border-color ease 0.2s;
+  cursor: pointer; }
+
+.checkbox-wrapper-19 .check-box::before,
+.checkbox-wrapper-19 .check-box::after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  position: absolute;
+  height: 0;
+  width: calc(var(--checkbox-height) * .2);
+  background-color: #34b93d;
+  display: inline-block;
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  -o-transform-origin: left top;
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+  border-radius: 5px;
+  content: " ";
+  -webkit-transition: opacity ease 0.5;
+  -moz-transition: opacity ease 0.5;
+  transition: opacity ease 0.5; }
+
+.checkbox-wrapper-19 .check-box::before {
+  top: calc(var(--checkbox-height) * .72);
+  left: calc(var(--checkbox-height) * .41);
+  box-shadow: 0 0 0 calc(var(--checkbox-height) * .05) var(--background-color);
+  -moz-transform: rotate(-135deg);
+  -ms-transform: rotate(-135deg);
+  -o-transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  transform: rotate(-135deg); }
+
+.checkbox-wrapper-19 .check-box::after {
+  top: calc(var(--checkbox-height) * .37);
+  left: calc(var(--checkbox-height) * .05);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg); }
+
+.checkbox-wrapper-19 input[type=checkbox]:checked + .check-box,
+.checkbox-wrapper-19 .check-box.checked {
+  border-color: #34b93d; }
+
+.checkbox-wrapper-19 input[type=checkbox]:checked + .check-box::after,
+.checkbox-wrapper-19 .check-box.checked::after {
+  height: calc(var(--checkbox-height) / 2);
+  -moz-animation: dothabottomcheck-19 0.2s ease 0s forwards;
+  -o-animation: dothabottomcheck-19 0.2s ease 0s forwards;
+  -webkit-animation: dothabottomcheck-19 0.2s ease 0s forwards;
+  animation: dothabottomcheck-19 0.2s ease 0s forwards; }
+
+.checkbox-wrapper-19 input[type=checkbox]:checked + .check-box::before,
+.checkbox-wrapper-19 .check-box.checked::before {
+  height: calc(var(--checkbox-height) * 1.2);
+  -moz-animation: dothatopcheck-19 0.4s ease 0s forwards;
+  -o-animation: dothatopcheck-19 0.4s ease 0s forwards;
+  -webkit-animation: dothatopcheck-19 0.4s ease 0s forwards;
+  animation: dothatopcheck-19 0.4s ease 0s forwards; }
+
 .sm_buttonGrey {
   appearance: none;
   border: 1px solid rgba(27, 31, 35, 0.15);
@@ -304,6 +468,7 @@ body {
   touch-action: manipulation;
   vertical-align: middle;
   white-space: nowrap;
+  margin-left: 5px;
   background-color: #e7e7e7;
   color: black; }
 
@@ -330,7 +495,34 @@ body {
   touch-action: manipulation;
   vertical-align: middle;
   white-space: nowrap;
+  margin-left: 5px;
   background-color: #2ea44f; }
+
+.sm_buttonRed {
+  appearance: none;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  background-color: #2ea44f;
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, 0.1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  margin-left: 5px;
+  background-color: red; }
 
 .sm_button:focus:not(:focus-visible):not(.focus-visible) {
   box-shadow: none;
@@ -353,18 +545,18 @@ body {
   background-color: #298e46;
   box-shadow: rgba(20, 70, 32, 0.2) 0 1px 0 inset; }
 
-@media screen and (max-width: 768px) {
-  .sm_toggledNavItems {
-    min-width: 40vw; }
+.gm-style-iw {
+  padding: 0 !important; }
 
-  .sm_toggledNavItemsHidden {
-    min-width: 40vw; }
+.gm-style-iw-d {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 400px;
+  overflow: hidden; }
 
-  .sm_navLogo {
-    width: 60vw; }
+.gm-ui-hover-effect {
+  display: none; }
 
-  .sm_navMenuButton {
-    width: 40vw; } }
 .body {
   font-family: "Helvetica"; }
 
