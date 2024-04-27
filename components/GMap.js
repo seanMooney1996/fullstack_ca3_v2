@@ -45,7 +45,8 @@ export default class GMap extends React.Component {
             currentlyViewedItemIndex: null,
             routeArray: [],
             stayingAt: "",
-            transportMode: "walking"
+            transportMode: "walking",
+            directionsOpen: false
         }
 
     }
@@ -129,10 +130,30 @@ export default class GMap extends React.Component {
         this.closeMenu()
         console.log(this.state.routeArray[0])
         console.log(this.state.routeArray[this.state.routeArray.length-1])
-        console.log(this.state.transportMode)
-        let request = {origin: this.state.routeArray[0],
-            destination: this.state.routeArray[this.state.routeArray.length-1],
-            travelMode:this.state.transportMode.toUpperCase()}
+        let stops = []
+        let routeArray = this.state.routeArray
+        let wayPointsObject = []
+        if (this.state.routeArray.length>2){
+            stops = routeArray.slice(1, -1);
+            for (let i = 0; i < stops.length; i++) {
+                wayPointsObject.push({
+                        location: stops[i],
+                        stopover: true,
+                    })
+            }
+        }
+
+        let request;
+        if (stops.length===0){
+            request = {origin: this.state.routeArray[0],
+                destination: this.state.routeArray[this.state.routeArray.length-1],
+                travelMode:this.state.transportMode.toUpperCase()}
+        } else {
+            request = {origin: this.state.routeArray[0],
+                destination: this.state.routeArray[this.state.routeArray.length-1],
+                waypoints: wayPointsObject,
+                travelMode:this.state.transportMode.toUpperCase()}
+        }
 
         this.directionsService = new window.google.maps.DirectionsService()
        this.directionsService.route(request, (route, status) =>
@@ -142,7 +163,7 @@ export default class GMap extends React.Component {
                 this.directionsRenderer.setDirections(route)
             }
         })
-        this.setState({infoWindowOpen:false})
+        this.setState({infoWindowOpen:false,directionsOpen:true})
     }
     // https://developers.google.com/maps/documentation/javascript/places <--- used documentation for nearby search code
     findPlacesInParis = (keyword) => {
@@ -381,6 +402,18 @@ export default class GMap extends React.Component {
 
     setTransport = (transport) => {
         this.setState({transportMode:transport})
+    }
+
+
+    toggleDirections = () => {
+        let directionsElem = document.getElementById("sm_directions")
+        if (this.state.directionsOpen){
+            directionsElem.classList.add("sm_displayNone")
+            this.setState({directionsOpen:false})
+        } else {
+            directionsElem.classList.remove("sm_displayNone")
+            this.setState({directionsOpen:true})
+        }
     }
     /// all checkbox classes are taken from https://getcssscan.com/css-checkboxes-examples (I did not change class names for this reason)
     render() {
@@ -830,7 +863,9 @@ export default class GMap extends React.Component {
                 {menuToRender}
                 {this.state.infoWindowOpen && this.state.currentMapMarkers.length > 1 && nextPrevButtons}
                 <div id="sm_directionsContainer">
-                    <div id="sm_directions"></div>
+                    <div id="sm_directions">
+                        {this.state.directionsOpen? <div className="sm_buttonGrey" onClick={this.toggleDirections}>Hide Directions</div> : null}
+                    </div>
                 </div>
                 <div id="sm_googleMap"></div>
             </div>

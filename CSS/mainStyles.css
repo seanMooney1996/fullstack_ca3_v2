@@ -441,7 +441,9 @@ body {
   position: absolute;
   z-index: 5;
   max-width: 500px;
-  background-color: white; }
+  background-color: white;
+  max-height: 84vh;
+  overflow: scroll; }
 
 @media screen and (max-width: 768px) {
   .sm_toggledNavItems {
