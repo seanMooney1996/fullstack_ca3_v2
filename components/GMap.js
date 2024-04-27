@@ -1,5 +1,6 @@
 import React from "react";
 import customLocations from '../json/customLocations.json';
+import ReactDOMServer from 'react-dom/server';
 
 export default class GMap extends React.Component {
     constructor(props) {
@@ -7,6 +8,7 @@ export default class GMap extends React.Component {
         super(props);
 
         this.infoWindow = null;
+        this.directionsRenderer = null
 
         let filterTypes = {
             "zoo": false,
@@ -40,7 +42,10 @@ export default class GMap extends React.Component {
             filterCategoryOpen: false,
             filterTypes: filterTypes,
             infoWindowOpen: false,
-            currentlyViewedItemIndex: null
+            currentlyViewedItemIndex: null,
+            routeArray: [],
+            stayingAt: "",
+            transportMode: "walking"
         }
 
     }
@@ -49,25 +54,96 @@ export default class GMap extends React.Component {
         this.loadMap();
     }
 
-    loadMap = () => {
-        let parisCenterLongLat = {lat: 48.868476, lng: 2.299877};
 
-        this.map = new window.google.maps.Map(document.getElementById("sm_googleMap"), {
-            mapId: "MY_MAP_ID",
-            zoom: 13,
-            center: parisCenterLongLat,
-            mapTypeId: window.google.maps.MapTypeId.ROADMAP,
-            mapTypeControlOptions: {
-                mapTypeIds: ["roadmap", "hide_poi"]
-            },
-            zoomControl: false,
-            streetViewControl: false
-        });
+    popUpMessage = (placeName, stayingAtOrRoute) => {
+        let message;
 
+        if (stayingAtOrRoute === "stayingAt") {
+            message = "Changed your lodging location to <b>" + placeName + "</b>!";
+        } else {
+            message = " <b>" + placeName + "</b> added to route list!";
+        }
 
-        this.hidePointsOfInterest();
+        let popup = document.getElementById("sm_popUpMessage")
+        popup.innerHTML = message;
+        this.popUpAnimation();
     }
 
+    popUpAnimation = () => {
+        const mapMenu = document.getElementById("sm_popUpMessage");
+        mapMenu.classList.remove("sm_popUpAnimationOut", "sm_displayNone");
+        mapMenu.classList.add("sm_popUpAnimationIn");
+        setTimeout(function () {
+            mapMenu.classList.remove("sm_popUpAnimationIn");
+            mapMenu.classList.add("sm_popUpAnimationOut");
+        }, 5000);
+
+    }
+    changeStayingAt = () => {
+        let currentMarkerName = this.state.currentMapMarkers[this.state.currentlyViewedItemIndex].name
+        console.log(currentMarkerName + " name of marker")
+
+        this.popUpMessage(currentMarkerName, "stayingAt");
+
+        this.setState({stayingAt: currentMarkerName})
+    }
+    addPlaceToRoute = () => {
+        let currentMarkerName = this.state.currentMapMarkers[this.state.currentlyViewedItemIndex].name
+        let placesInRoute = this.state.routeArray
+        this.popUpMessage(currentMarkerName, "addToRoute");
+        placesInRoute.push(currentMarkerName)
+        this.setState({routeArray: placesInRoute})
+    }
+
+    // used chatgpt to get code for loading script in a function!!!
+    loadMap = () => {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD106Ay0bch9-eZ5sXYm1kEFjCelf3N-Gg&loading=async&libraries=places,marker&callback=initMap`;
+        document.head.appendChild(script);
+
+        window.initMap = () => {
+            let parisCenterLongLat = {lat: 48.868476, lng: 2.299877}
+            this.map = new window.google.maps.Map(document.getElementById("sm_googleMap"), {
+                mapId: "MY_MAP_ID",
+                zoom: 13,
+                center: parisCenterLongLat,
+                mapTypeId: window.google.maps.MapTypeId.ROADMAP,
+                mapTypeControlOptions: {
+                    mapTypeIds: ["roadmap", "hide_poi"]
+                },
+                zoomControl: false,
+                streetViewControl: false
+            })
+
+            this.directionsRenderer = new google.maps.DirectionsRenderer()
+            this.directionsRenderer.setMap(this.map)
+
+            this.directionsRenderer.setPanel(document.getElementById("sm_directions"))
+            this.hidePointsOfInterest();
+        }
+    }
+
+     calculateRoute = () =>
+    {
+        this.infoWindow.close()
+        this.closeMenu()
+        console.log(this.state.routeArray[0])
+        console.log(this.state.routeArray[this.state.routeArray.length-1])
+        console.log(this.state.transportMode)
+        let request = {origin: this.state.routeArray[0],
+            destination: this.state.routeArray[this.state.routeArray.length-1],
+            travelMode:this.state.transportMode.toUpperCase()}
+
+        this.directionsService = new window.google.maps.DirectionsService()
+       this.directionsService.route(request, (route, status) =>
+        {
+            if (status === window.google.maps.DirectionsStatus.OK)
+            {
+                this.directionsRenderer.setDirections(route)
+            }
+        })
+        this.setState({infoWindowOpen:false})
+    }
     // https://developers.google.com/maps/documentation/javascript/places <--- used documentation for nearby search code
     findPlacesInParis = (keyword) => {
         this.closeMenu()
@@ -96,15 +172,12 @@ export default class GMap extends React.Component {
         let openMapMark = this.openMapMark
         this.removeMarkers()
 
-        let resultWithGeometry
-        let geometryFound = false;
+
         function callback(results, status) {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
                 for (var i = 0; i < results.length; i++) {
-                    if (results[i].geometry){
-                        if (!geometryFound){
-                            createMarker(results[i])
-                        }
+                    if (results[i].geometry) {
+                        createMarker(results[i])
                     }
                 }
             }
@@ -124,14 +197,12 @@ export default class GMap extends React.Component {
             icon: icon
         })
 
-
-        console.log(marker.position)
         if (!this.infoWindow) {
             this.infoWindow = new window.google.maps.InfoWindow();
         }
-        let infoWindowWidth = (window.screen.width/100)*80
+        let infoWindowWidth = (window.screen.width / 100) * 80
 
-        if (infoWindowWidth > 400){
+        if (infoWindowWidth > 400) {
             infoWindowWidth = 400;
         }
         let images = '';
@@ -144,49 +215,42 @@ export default class GMap extends React.Component {
                 images += `<img alt class="sm_backgroundImage" src="${imageUrl}" style="width:${width}px; height:${height}px;">`;
             });
         }
-        const contentString = `<div class="sm_infoWindowContent" >
-                                        <div class="sm_infoBoxImageHolder"> ${images}</div>
-                                                        <div><h1>${place.name}</h1></div>
-                        </div>`
+
+        const contentString = `<div class="sm_infoWindowContent">
+        <div class="sm_infoBoxImageHolder">${images}</div>
+        <div><h1>${place.name}</h1></div>
+    </div>`;
 
 
         window.google.maps.event.addListener(marker, "click", () => {
             this.infoWindow.setContent(contentString);
             this.infoWindow.open(this.map, marker);
-            if (!this.state.infoWindowOpen){
-                this.setState({infoWindowOpen:true})
+            if (!this.state.infoWindowOpen) {
+                this.setState({infoWindowOpen: true})
             }
         })
 
+
         window.google.maps.event.addListener(this.infoWindow, "closeclick", () => {
-            if (this.state.infoWindowOpen){
-                this.setState({infoWindowOpen:false})
+            if (this.state.infoWindowOpen) {
+                this.setState({infoWindowOpen: false})
             }
         })
 
         let mapMarkers = this.state.currentMapMarkers;
 
-        let mapMarkWithContent = {marker:marker,content:contentString}
+        let mapMarkWithContent = {marker: marker, content: contentString, name: place.name, types: place.types}
         mapMarkers.push(mapMarkWithContent)
         this.setState({currentMapMarkers: mapMarkers})
     }
 
+
     openMapMark = (positionInArray) => {
 
         let pos = this.state.currentMapMarkers[positionInArray].marker.position;
-
-        // let newLat = pos.lat() + 0.004
-        // let long = pos.lng()
-        //
-        // let newCenter = {
-        //     lat:newLat,
-        //     lng: long
-        // }
-        //
-        // console.log(newCenter)
         this.infoWindow.setContent(this.state.currentMapMarkers[positionInArray].content);
         this.infoWindow.open(this.map, this.state.currentMapMarkers[positionInArray].marker);
-        this.setState({infoWindowOpen:true, currentlyViewedItemIndex:positionInArray})
+        this.setState({infoWindowOpen: true, currentlyViewedItemIndex: positionInArray})
         this.map.setCenter(pos)
         this.map.setZoom(15);
     }
@@ -263,7 +327,7 @@ export default class GMap extends React.Component {
         if (category !== this.state.filterCategory || !this.state.filterCategoryOpen) {
             this.setState({filterCategory: category, filterCategoryOpen: true})
         } else {
-            this.setState({filterCategoryOpen: false,filterCategory: ""});
+            this.setState({filterCategoryOpen: false, filterCategory: ""});
         }
     }
 
@@ -279,41 +343,45 @@ export default class GMap extends React.Component {
     changeAllCheck = (boolean) => {
         let allChanged = {}
         for (let [key, value] of Object.entries(this.state.filterTypes)) {
-                allChanged[key] = boolean
+            allChanged[key] = boolean
         }
 
-        this.setState({filterTypes:allChanged})
+        this.setState({filterTypes: allChanged})
     }
 
-    changeViewedMarker = (direction) =>{
-        let viewedMarkerIndex = this.state.currentlyViewedItemIndex +direction;
+    changeViewedMarker = (direction) => {
+        let viewedMarkerIndex = this.state.currentlyViewedItemIndex + direction;
 
         console.log(viewedMarkerIndex)
         this.openMapMark(viewedMarkerIndex)
-        this.setState({currentlyViewedItemIndex:viewedMarkerIndex})
+        this.setState({currentlyViewedItemIndex: viewedMarkerIndex})
     }
 
 
-    // let filterTypes = {
-    //     "zoo": true,
-    //     "night_club": true,
-    //     "movie_theater": true,
-    //     "cafe": true,
-    //     "restaurant": true,
-    //     "meal_takeaway": true,
-    //     "liquor_store": true,
-    //     "clothing_store": true,
-    //     "shopping_mall": true,
-    //     "shoe_store": true,
-    //     "airport": true,
-    //     "train_station": true,
-    //     "subway_station": true,
-    //     "pharmacy": true,
-    //     "parking": true,
-    //     "tourist_attraction": true,
-    //     "museum": true
-    // };
+    changeRouteOrder = (direction, index) => {
+        let arrayCopy = this.state.routeArray
+        let temp = this.state.routeArray[index];
 
+        if (direction === 1) {
+            arrayCopy[index] = arrayCopy[index + 1]
+            arrayCopy[index + 1] = temp;
+        } else {
+            arrayCopy[index] = arrayCopy[index - 1]
+            arrayCopy[index - 1] = temp
+        }
+
+        this.setState({routeArray: arrayCopy})
+    }
+    removeFromRouteArray = (index) => {
+        let arrayCopy = this.state.routeArray
+        arrayCopy.splice(index, 1);
+        this.setState({routeArray: arrayCopy})
+    }
+
+
+    setTransport = (transport) => {
+        this.setState({transportMode:transport})
+    }
     /// all checkbox classes are taken from https://getcssscan.com/css-checkboxes-examples (I did not change class names for this reason)
     render() {
 
@@ -330,7 +398,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Night Club</div>
+                        <div className="sm_labelCheckBox"><p>Night Club</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_nightClubCheckBox" onChange={() => {
                             }} checked={filterTypes.night_club} onClick={() => this.changeCheck("night_club")}/>
@@ -338,7 +406,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Movie Theatres</div>
+                        <div className="sm_labelCheckBox"><p>Movie Theatres</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_movieTheatresCheckBox" onChange={() => {
                             }} checked={filterTypes.movie_theater} onClick={() => this.changeCheck("movie_theater")}/>
@@ -352,7 +420,7 @@ export default class GMap extends React.Component {
             <div className="sm_categoryItems">
                 <div className="sm_categoryHolders">
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Cafe</div>
+                        <div className="sm_labelCheckBox"><p>Cafe</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_coffeeShopCheckBox" onChange={() => {
                             }} checked={filterTypes.cafe} onClick={() => this.changeCheck("cafe")}/>
@@ -360,7 +428,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Restaurant</div>
+                        <div className="sm_labelCheckBox"><p>Restaurant</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_dinerCheckBox" onChange={() => {
                             }} checked={filterTypes.restaurant} onClick={() => this.changeCheck("restaurant")}/>
@@ -368,7 +436,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Takeout</div>
+                        <div className="sm_labelCheckBox"><p>Takeout</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_takeoutCheckBox" onChange={() => {
                             }} checked={filterTypes.meal_takeaway} onClick={() => this.changeCheck("meal_takeaway")}/>
@@ -376,7 +444,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Liquor Shop</div>
+                        <div className="sm_labelCheckBox"><p>Liquor Shop</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_liquorShopCheckBox" onChange={() => {
                             }} checked={filterTypes.liquor_store} onClick={() => this.changeCheck("liquor_store")}/>
@@ -390,7 +458,7 @@ export default class GMap extends React.Component {
             <div className="sm_categoryItems">
                 <div className="sm_categoryHolders">
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Clothing Shop</div>
+                        <div className="sm_labelCheckBox"><p>Clothing Shop</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_apparelStoreCheckBox" onChange={() => {
                             }} checked={filterTypes.clothing_store} onClick={() => this.changeCheck("clothing_store")}/>
@@ -398,7 +466,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Shopping Mall</div>
+                        <div className="sm_labelCheckBox"><p>Shopping Mall</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_mallCheckBox" onChange={() => {
                             }} checked={filterTypes.shopping_mall} onClick={() => this.changeCheck("shopping_mall")}/>
@@ -406,7 +474,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Footwear</div>
+                        <div className="sm_labelCheckBox"><p>Footwear</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_footwearStoreCheckBox" onChange={() => {
                             }} checked={filterTypes.shoe_store} onClick={() => this.changeCheck("shoe_store")}/>
@@ -420,7 +488,7 @@ export default class GMap extends React.Component {
             <div className="sm_categoryItems">
                 <div className="sm_categoryHolders">
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Airport</div>
+                        <div className="sm_labelCheckBox"><p>Airport</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_airportCheckBox" onChange={() => {
                             }} checked={filterTypes.airport} onClick={() => this.changeCheck("airport")}/>
@@ -428,7 +496,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Train Station</div>
+                        <div className="sm_labelCheckBox"><p>Train Station</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_trainStationCheckBox" onChange={() => {
                             }} checked={filterTypes.train_station} onClick={() => this.changeCheck("train_station")}/>
@@ -436,7 +504,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Subway Station</div>
+                        <div className="sm_labelCheckBox"><p>Subway Station</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_subwayStationCheckBox" onChange={() => {
                             }} checked={filterTypes.subway_station} onClick={() => this.changeCheck("subway_station")}/>
@@ -450,7 +518,7 @@ export default class GMap extends React.Component {
             <div className="sm_categoryItems">
                 <div className="sm_categoryHolders">
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Pharmacy</div>
+                        <div className="sm_labelCheckBox"><p>Pharmacy</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_pharmacyCheckBox" onChange={() => {
                             }} checked={filterTypes.pharmacy} onClick={() => this.changeCheck("pharmacy")}/>
@@ -458,7 +526,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Parking</div>
+                        <div className="sm_labelCheckBox"><p>Parking</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_parkingCheckBox" onChange={() => {
                             }} checked={filterTypes.parking} onClick={() => this.changeCheck("parking")}/>
@@ -472,7 +540,7 @@ export default class GMap extends React.Component {
             <div className="sm_categoryItems">
                 <div className="sm_categoryHolders">
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Tourist Attraction</div>
+                        <div className="sm_labelCheckBox"><p>Tourist Attraction</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_touristAttractionCheckBox" onChange={() => {
                             }} checked={filterTypes.tourist_attraction}
@@ -481,7 +549,7 @@ export default class GMap extends React.Component {
                         </div>
                     </div>
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox">Museum</div>
+                        <div className="sm_labelCheckBox"><p>Museum</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_museumCheckBox" onChange={() => {
                             }} checked={filterTypes.museum} onClick={() => this.changeCheck("museum")}/>
@@ -496,60 +564,151 @@ export default class GMap extends React.Component {
             <div className="sm_filterOptions">
                 <div className="sm_filterRow">
                     <div className="sm_buttonGreen sm_menuItemInner"
-                         onClick={() => this.changeAllCheck(true)}>Check All
+                         onClick={() => this.changeAllCheck(true)}><p>Check All</p>
                     </div>
                     <div className="sm_buttonRed sm_menuItemInner"
-                         onClick={() => this.changeAllCheck(false)}>Uncheck All
+                         onClick={() => this.changeAllCheck(false)}><p>Uncheck All</p>
                     </div>
                 </div>
                 <div className="sm_filterRow">
-                    <div className="sm_filterCat" >
-                        <div onClick={() => this.changeFilterCategory("Entertainment")}>Entertainment</div>
+                    <div className="sm_filterCat">
+                        <div onClick={() => this.changeFilterCategory("Entertainment")}><p>Entertainment</p></div>
                         {this.state.filterCategory === "Entertainment" && entertainment}
                     </div>
                 </div>
                 <div className="sm_filterRow">
                     <div className="sm_filterCat">
-                        <div onClick={() => this.changeFilterCategory("FoodDrink")} >Food & Drink</div>
+                        <div onClick={() => this.changeFilterCategory("FoodDrink")}><p>Food & Drink</p></div>
                         {this.state.filterCategory === "FoodDrink" && FoodDrink}
                     </div>
                 </div>
                 <div className="sm_filterRow">
                     <div className="sm_filterCat">
-                       <div onClick={() => this.changeFilterCategory("Shopping")}>Shopping</div>
+                        <div onClick={() => this.changeFilterCategory("Shopping")}><p>Shopping</p></div>
                         {this.state.filterCategory === "Shopping" && Shopping}
                     </div>
                 </div>
                 <div className="sm_filterRow">
                     <div className="sm_filterCat">
-                        <div onClick={() => this.changeFilterCategory("Transportation")} >Transportation</div>
+                        <div onClick={() => this.changeFilterCategory("Transportation")}><p>Transportation</p></div>
                         {this.state.filterCategory === "Transportation" && Transportation}
                     </div>
                 </div>
                 <div className="sm_filterRow">
                     <div className="sm_filterCat">
-                        <div onClick={() => this.changeFilterCategory("Health")} >Health</div>
+                        <div onClick={() => this.changeFilterCategory("Health")}><p>Health</p></div>
                         {this.state.filterCategory === "Health" && Health}
                     </div>
                 </div>
                 <div className="sm_filterRow">
-                    <div className="sm_filterCat" >
-                        <div onClick={() => this.changeFilterCategory("Attractions")} >Attractions</div>
+                    <div className="sm_filterCat">
+                        <div onClick={() => this.changeFilterCategory("Attractions")}><p>Attractions</p></div>
                         {this.state.filterCategory === "Attractions" && Attractions}
                     </div>
                 </div>
             </div>
         );
 
+
+        let routeItems = []; // Initialize an array to hold JSX elements
+
+
+        /// https://fontawesome.com/search?q=arrow&o=r&m=free <----- arrow symbols used, taken from here
+        if (this.state.routeArray.length > 0) {
+            this.state.routeArray.forEach((location, index) => {
+                if (index === 0) {
+
+                    if (this.state.routeArray.length !== 1) {
+                        routeItems.push(
+                            <div className="sm_menuItem" key={index}>
+                                <div className="sm_routeItemSplit sm_topMostRoute">
+                                    <div className="sm_routeIndicator"><p><b>BEGIN </b></p></div>
+                                    <p>{location}</p>
+                                    <div className="sm_changeOrderArrows">
+                                        <div className="sm_arrowBox" onClick={() => this.removeFromRouteArray(index)}><i
+                                            className="fa-solid fa-circle-xmark"></i></div>
+                                        <div className="sm_arrowBox" onClick={() => this.changeRouteOrder(1, index)}><i
+                                            className="fa-solid fa-arrow-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    } else {
+                        routeItems.push(
+                            <div className="sm_menuItem" key={index}>
+                                <div className="sm_routeItemSplit sm_topMostRoute">
+                                    <div className="sm_routeIndicator"><p><b>BEGIN </b></p></div>
+                                    <p>{location}</p>
+                                    <div className="sm_changeOrderArrows">
+                                        <div className="sm_arrowBox" onClick={() => this.removeFromRouteArray(index)}><i
+                                            className="fa-solid fa-circle-xmark"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }
+                } else if (index === this.state.routeArray.length - 1) {
+                    routeItems.push(
+                        <div className="sm_menuItem" key={index}>
+                            <div className="sm_routeItemSplit sm_lastRoute">
+                                <div className="sm_routeIndicator"><p><b>END </b></p></div>
+                                <p>{location}</p>
+                                <div className="sm_changeOrderArrows">
+                                    <div className="sm_arrowBox" onClick={() => this.removeFromRouteArray(index)}><i
+                                        className="fa-solid fa-circle-xmark"></i></div>
+                                    <div className="sm_arrowBox" onClick={() => this.changeRouteOrder(-1, index)}><i
+                                        className="fa-solid fa-arrow-up"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                } else {
+                    routeItems.push(
+                        <div className="sm_menuItem" key={index}>
+                            <div className="sm_routeItemSplit sm_middleRoute">
+                                <div className="sm_routeIndicator"></div>
+                                <p>{location}</p>
+                                <div className="sm_changeOrderArrows">
+                                    <div className="sm_arrowBox" onClick={() => this.removeFromRouteArray(index)}><i
+                                        className="fa-solid fa-circle-xmark"></i></div>
+                                    <div className="sm_arrowBox" onClick={() => this.changeRouteOrder(1, index)}><i
+                                        className="fa-solid fa-arrow-down"></i></div>
+                                    <div className="sm_arrowBox" onClick={() => this.changeRouteOrder(-1, index)}><i
+                                        className="fa-solid fa-arrow-up"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+            })
+        } else {
+            routeItems.push(
+                <div className="sm_menuItem" >
+                    <div className="sm_routeItemSplit">
+                        <p>Your routes are empty!</p>
+                    </div>
+                </div>
+            )
+        }
         let planRouteElement = (
             <div className="sm_menuItemsContainer">
-                <input></input>
-                <p>Plan route </p>
-                <p>some text </p>
-                <p>some text </p>
-                <p>some text </p>
+                <div className="sm_modeOfTransportContainer">
+                    <div className={`sm_modeOfTransport sm_grow ${this.state.transportMode === "walking" ? "sm_transportSelected" : ""}`} onClick={() => this.setTransport("walking")}><i
+                        className="fa-solid fa-person-walking"></i></div>
+                    <div className={`sm_modeOfTransport sm_grow ${this.state.transportMode === "bicycling" ? "sm_transportSelected" : ""}`} onClick={() => this.setTransport("bicycling")}><i
+                        className="fa-solid fa-person-biking"></i></div>
+                    <div className={`sm_modeOfTransport sm_grow ${this.state.transportMode === "driving" ? "sm_transportSelected" : ""}`} onClick={() => this.setTransport("driving")}><i
+                        className="fa-solid fa-car-side"></i></div>
+                </div>
+                {routeItems.map((element, index) => (
+                    <div key={index}>
+                        {element}
+                    </div>
+                ))}
+                <div className="sm_buttonGreen" onClick={this.calculateRoute}>Get Directions</div>
             </div>
-        )
+        );
 
         let nearYou = (
             <div className="sm_menuItemsContainer" onClick={() => this.openMenuItem("search")}>
@@ -602,22 +761,59 @@ export default class GMap extends React.Component {
 
         let buttonsOnView;
 
-        if (this.state.currentlyViewedItemIndex === 0 ){
-            buttonsOnView =   (<div className="sm_containButtons"><div className="sm_prevNextButtons sm_buttonGrey"  onClick={() => this.changeViewedMarker(1)}>Next</div></div>)
-        } else if (this.state.currentlyViewedItemIndex === (this.state.currentMapMarkers.length-1)){
-            buttonsOnView = (<div className="sm_containButtons"><div className="sm_prevNextButtons sm_buttonGrey" onClick={() => this.changeViewedMarker(-1)}>Previous</div></div>)
-        } else {
-            buttonsOnView = (
-                <div className="sm_containButtons">
-                    <div className="sm_prevNextButtons sm_buttonGrey" onClick={() => this.changeViewedMarker(-1)}>Previous</div>
-                    <div className="sm_prevNextButtons sm_buttonGrey" onClick={() => this.changeViewedMarker(1)}>Next</div>
+        let typesExist = false;
+        let addToStayingAtButton = null;
+
+        if (this.state.currentMapMarkers && this.state.currentMapMarkers[this.state.currentlyViewedItemIndex] && this.state.currentMapMarkers[this.state.currentlyViewedItemIndex].types !== undefined) {
+            typesExist = true;
+            const types = this.state.currentMapMarkers[this.state.currentlyViewedItemIndex].types;
+            if (types.includes("lodging")) {
+                addToStayingAtButton = (
+                    <div className="sm_leftButtons">
+                        <div className="sm_buttonGrey sm_leftButton" onClick={this.addPlaceToRoute}>Add to Route</div>
+                        <div className="sm_buttonGrey sm_leftButton" onClick={this.changeStayingAt}>Staying here</div>
                     </div>
-                        )
+                )
+            } else {
+                addToStayingAtButton = (
+                    <div className="sm_leftButtons">
+                        <div className="sm_buttonGrey sm_leftButton" onClick={this.addPlaceToRoute}>Add to Route</div>
+                    </div>
+                )
+            }
+            if (this.state.currentlyViewedItemIndex === 0) {
+                buttonsOnView = (<div className="sm_containButtons">
+                    {typesExist && addToStayingAtButton}
+                    <div className="sm_prevNextButtons sm_buttonGrey" onClick={() => this.changeViewedMarker(1)}>Next
+                    </div>
+                </div>)
+            } else if (this.state.currentlyViewedItemIndex === (this.state.currentMapMarkers.length - 1)) {
+                buttonsOnView = (<div className="sm_containButtons">
+                    {typesExist && addToStayingAtButton}
+                    <div className="sm_prevNextButtons sm_buttonGrey"
+                         onClick={() => this.changeViewedMarker(-1)}>Previous
+                    </div>
+                </div>)
+            } else {
+                buttonsOnView = (
+                    <div className="sm_containButtons">
+                        {typesExist && addToStayingAtButton}
+                        <div className="sm_prevNextButtons sm_buttonGrey"
+                             onClick={() => this.changeViewedMarker(-1)}>Previous
+                        </div>
+                        <div className="sm_prevNextButtons sm_buttonGrey"
+                             onClick={() => this.changeViewedMarker(1)}>Next
+                        </div>
+                    </div>
+                )
+            }
+
         }
         let nextPrevButtons = (
-                <div className="sm_nextPrevButtonHold">
-                        {buttonsOnView}
-                </div>
+            <div className="sm_nextPrevButtonHold">
+                <div id="sm_popUpMessage" className="sm_displayNone"> POP UP MESSAGE</div>
+                {buttonsOnView}
+            </div>
         )
 
 
@@ -633,6 +829,9 @@ export default class GMap extends React.Component {
                 </div>
                 {menuToRender}
                 {this.state.infoWindowOpen && this.state.currentMapMarkers.length > 1 && nextPrevButtons}
+                <div id="sm_directionsContainer">
+                    <div id="sm_directions"></div>
+                </div>
                 <div id="sm_googleMap"></div>
             </div>
         );

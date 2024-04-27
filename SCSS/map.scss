@@ -81,6 +81,7 @@
   height: auto;
   position: absolute;
   padding-top: 15px;
+  padding-bottom: 15px;
   flex-direction: column;
   align-items: center;
   right: 0;
@@ -183,13 +184,129 @@
 .sm_containButtons {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: flex-end;
   width: 90%;
   max-width:500px;
   height: 100%;
   align-items: center;
 }
+.sm_leftButtons {
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  justify-content: space-between;
+}
+.sm_leftButton {
+  height:45%;
+  width:95%;
+}
+#sm_popUpMessage {
+  position:absolute;
+  bottom: 200px;
+  border:1px solid black;
+  background-color: white;
+  padding:10px;
+}
 
+.sm_popUpAnimationOut {
+  animation: sm_popUpKeyFrameOut 0.4s ease-in forwards;
+}
 
+@keyframes sm_popUpKeyFrameOut {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(+700%);
+  }
+}
+
+.sm_popUpAnimationIn {
+  animation: sm_popUpKeyFrameIn 0.4s ease-in forwards;
+}
+
+@keyframes sm_popUpKeyFrameIn {
+  from {
+    transform: translateY(+700%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.sm_routeItemSplit {
+  display:flex;
+  width:100%;
+  justify-content: space-between;
+  border-bottom: 1px solid #aaa;
+padding-top: 12px;
+  padding-bottom: 13px;
+
+}
+.sm_changeOrderArrows{
+  width:20%;
+  display:flex;
+  flex-direction: row-reverse;
+}
+.sm_arrowBox {
+  width: 33.3%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sm_routeIndicator{
+  width:15%;
+  display:flex;
+  flex-direction: row;
+}
+.sm_modeOfTransportContainer {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-bottom:15px;
+}
+.sm_modeOfTransport {
+  width: 80px;
+  height: 100%;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  i {
+    font-size: 2em;
+  }
+  //background-color: #FFD700;
+  background-color: #DCDCDC;
+  // https://getcssscan.com/css-box-shadow-examples
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+.sm_grow {
+  transition: all .2s ease-in-out;
+}
+
+.sm_grow:hover {
+  background-color: #FFD700;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+.sm_transportSelected {
+  background-color: #FFD700;
+}
+#sm_directionsContainer{
+  width:100%;
+  position:absolute;
+  z-index:5;
+  display:flex;
+  justify-content: center;
+}
+#sm_directions{
+  width:100%;
+  position:absolute;
+  z-index:5;
+  max-width: 500px;
+  background-color: white;
+}
 
 

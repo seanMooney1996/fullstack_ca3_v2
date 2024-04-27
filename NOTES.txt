@@ -4,10 +4,6 @@ https://swiperjs.com/swiper-api <----- using swiper for image slider (Set up par
 /*** Using swiper css for basic swiper style ****/
 // https://codesandbox.io/p/devbox/swiper-react-navigation-2k3jk3?file=%2Fsrc%2FApp.jsx%3A27%2C16'
 
-
- // used chatgpt to learn how to load script in class component!! Component did mount is code from chatgpt!
-
-
 //https://medium.com/@vipinnation/building-language-translation-in-a-react-js-app-with-google-translate-api-45e1236e2bad
 //setting up translator, used code from the website above
 
@@ -18,3 +14,10 @@ https://swiperjs.com/swiper-api <----- using swiper for image slider (Set up par
 
 
 //https://getcssscan.com/css-checkboxes-examples <---- all checkbox css has been taken from here (I did not change class names for checkBox id's and class)
+
+
+// used chatgpt for loading script in js class. (load map function in GMAP component)
+
+// using font awesome for icons https://fontawesome.com/icons/arrow-up?f=classic&s=solid
+
+//// https://getcssscan.com/css-box-shadow-examples <----- border shadow taken from here
