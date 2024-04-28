@@ -46,7 +46,8 @@ export default class GMap extends React.Component {
             routeArray: [],
             stayingAt: "",
             transportMode: "walking",
-            directionsOpen: false
+            directionsOpen: false,
+            directionsToggle: false
         }
 
     }
@@ -163,6 +164,9 @@ export default class GMap extends React.Component {
                 this.directionsRenderer.setDirections(route)
             }
         })
+        let directionsElem = document.getElementById("sm_directions")
+        directionsElem.classList.remove("sm_displayNone")
+
         this.setState({infoWindowOpen:false,directionsOpen:true})
     }
     // https://developers.google.com/maps/documentation/javascript/places <--- used documentation for nearby search code
@@ -739,7 +743,7 @@ export default class GMap extends React.Component {
                         {element}
                     </div>
                 ))}
-                <div className="sm_buttonGreen" onClick={this.calculateRoute}>Get Directions</div>
+                {this.state.routeArray.length > 1? <div className="sm_buttonGreen" onClick={this.calculateRoute}>Get Directions</div> : null}
             </div>
         );
 
@@ -755,7 +759,7 @@ export default class GMap extends React.Component {
         )
         let searchElement = (
             <div className="sm_menuItemsContainer">
-                <div className="sm_menuItem">
+                <div className="sm_menuItem sm_paddingBottomNone">
                     <input className="sm_searchBar" placeholder="Search for anything"
                            onChange={(e) => this.setSearchValue(e)}>
                     </input>
@@ -854,17 +858,17 @@ export default class GMap extends React.Component {
             <div className="sm_mapHoldFull">
                 <div id="sm_navigation">
                     <div className="sm_mapNavOptions">
-                        <div className="sm_navOptButton" onClick={() => this.openMenuItem("search")}>Search</div>
-                        <div className="sm_navOptButton" onClick={() => this.openMenuItem("planRoute")}>Plan Route
+                        <div className="sm_navOptButton" onClick={() => this.openMenuItem("search")}><p>Search</p></div>
+                        <div className="sm_navOptButton" onClick={() => this.openMenuItem("planRoute")}><p>Directions</p>
                         </div>
-                        <div className="sm_navOptButton" onClick={() => this.openMenuItem("nearYou")}>Near You</div>
+                        <div className="sm_navOptButton" onClick={() => this.openMenuItem("nearYou")}><p>Near You</p></div>
                     </div>
                 </div>
                 {menuToRender}
                 {this.state.infoWindowOpen && this.state.currentMapMarkers.length > 1 && nextPrevButtons}
                 <div id="sm_directionsContainer">
-                    <div id="sm_directions">
-                        {this.state.directionsOpen? <div className="sm_buttonGrey" onClick={this.toggleDirections}>Hide Directions</div> : null}
+                    <div id="sm_directions" className="sm_displayNone">
+                        {this.state.directionsOpen? <div className="sm_buttonClose sm_openDirections" onClick={this.toggleDirections}><i className="fa-solid fa-circle-xmark"></i></div> : null}
                     </div>
                 </div>
                 <div id="sm_googleMap"></div>

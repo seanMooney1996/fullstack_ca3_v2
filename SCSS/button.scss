@@ -42,6 +42,18 @@
   @include sm_button();
   background-color: red;
 }
+
+.sm_buttonClose {
+  @include sm_button();
+  background-color: red;
+  width:30px;
+  height:30px;
+  border-radius: 30px;
+  padding:0;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
 .sm_button:focus:not(:focus-visible):not(.focus-visible) {
   box-shadow: none;
   outline: none;

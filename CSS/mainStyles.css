@@ -241,16 +241,19 @@ body {
   width: 100%;
   height: auto;
   position: absolute;
-  padding-top: 15px;
-  padding-bottom: 15px;
   flex-direction: column;
   align-items: center;
   right: 0;
   background-color: rgba(255, 255, 255, 0.95); }
 
+.sm_paddingBottomNone {
+  margin-bottom: 0 !important; }
+
 .sm_menuItemsContainer {
   width: 85%;
-  max-width: 650px; }
+  max-width: 650px;
+  padding-bottom: 15px;
+  padding-top: 15px; }
 
 .sm_menuItem {
   display: flex;
@@ -444,6 +447,30 @@ body {
   background-color: white;
   max-height: 84vh;
   overflow: scroll; }
+
+.sm_openDirections {
+  position: absolute !important;
+  right: 10px;
+  top: 16.5%;
+  z-index: 2;
+  height: 40px; }
+
+.sm_backgroundImage {
+  width: 100% !important; }
+
+.gm-iw {
+  padding: 10px !important; }
+
+.gm-style-iw-d {
+  padding: 15px; }
+
+.gm-ui-hover-effect {
+  top: 3px !important;
+  right: 4px !important;
+  border-radius: 30px !important;
+  background-color: #aaaaaa !important;
+  opacity: 1 !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset !important; }
 
 @media screen and (max-width: 768px) {
   .sm_toggledNavItems {
@@ -656,6 +683,39 @@ body {
   white-space: nowrap;
   margin-left: 5px;
   background-color: red; }
+
+.sm_buttonClose {
+  appearance: none;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  background-color: #2ea44f;
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, 0.1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  margin-left: 5px;
+  background-color: red;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
 
 .sm_button:focus:not(:focus-visible):not(.focus-visible) {
   box-shadow: none;
