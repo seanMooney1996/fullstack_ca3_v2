@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from "../images/Paris2024_OlyEmbleme_RVB_Poly_2021.png"
 export default class NavBar extends React.Component {
     constructor(props) {
         super(props)
@@ -74,15 +75,6 @@ export default class NavBar extends React.Component {
                 <div className = "sm_navBarItem" onClick={() => this.changeComponent("Gmap")}>
                     <p>{this.state.textItems.get("map")}</p>
                 </div>
-                <div className =  "sm_navBarItem">
-                    <p>{this.state.textItems.get("gallery")}</p>
-                </div>
-                <div className =  "sm_navBarItem">
-                    <p>{this.state.textItems.get("reviews")}</p>
-                </div>
-                <div className =  "sm_navBarItem">
-                    <p>{this.state.textItems.get("aboutUs")}</p>
-                </div>
             </>
         )
 
@@ -111,7 +103,8 @@ export default class NavBar extends React.Component {
         return (
             <div className="sm_navHolder">
             <div className ="sm_navLogo">
-                <p>LOGO</p>
+                <p></p>
+                <img src={logo} className="sm_logo" alt="" height="100%"/>
             </div>
                 <div className="sm_navMenuButton">
                     <div  onClick={() => this.clickOpenMenu("Lang")} ><p>{this.state.textItems.get("lang")}</p></div>

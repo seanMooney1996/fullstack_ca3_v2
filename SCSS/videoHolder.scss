@@ -40,10 +40,30 @@
 .sm_videoPlayer{
   pointer-events: none;
 }
+.sm_rangeValueDisplay{
+  min-width:25%;
+}
 .sm_holdImageSlider {
   width:100%;
   display:flex;
   z-index:2;
   align-items: center;
   margin-bottom:10%;
+}
+.sm_slider {
+  appearance: none;
+  width: 75%;
+  height: 25px;
+  background: #2ea44f ;
+  outline: none;
+  border-radius: 50px;
+}
+
+.sm_slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  cursor: pointer;
 }

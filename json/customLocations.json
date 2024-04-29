@@ -31,7 +31,7 @@
         "location": {"lat": 48.843134, "lng": 2.247273}
       },
       "name": "Olympic Souvenirs Emporium",
-      "types": ["merchandise_stores"],
+      "types": ["olympic_merchandise_stores"],
       "icon": "https://maps.gstatic.com/mapfiles/ms2/micons/euro.png",
       "products": [
         "T-shirts",
@@ -45,7 +45,7 @@
         "location": {"lat": 48.924468, "lng": 2.360728}
       },
       "name": "Champion Gear Outlet",
-      "types": ["merchandise_stores"],
+      "types": ["olympic_merchandise_stores"],
       "icon": "https://maps.gstatic.com/mapfiles/ms2/micons/euro.png",
       "products": [
         "Jerseys",

@@ -9,7 +9,11 @@
 @import "button";
 @import "infoWindow";
 @import "arrows";
-.body {
-  font-family: $fontFamily;
+@import "toggle.scss";
+body {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
 }
 

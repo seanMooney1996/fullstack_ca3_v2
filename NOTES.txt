@@ -1,5 +1,5 @@
 
-https://swiperjs.com/swiper-api <----- using swiper for image slider (Set up parameters myself)
+//https://swiperjs.com/swiper-api <----- using swiper for image slider (Set up parameters myself)
 
 /*** Using swiper css for basic swiper style ****/
 // https://codesandbox.io/p/devbox/swiper-react-navigation-2k3jk3?file=%2Fsrc%2FApp.jsx%3A27%2C16'
@@ -7,17 +7,18 @@ https://swiperjs.com/swiper-api <----- using swiper for image slider (Set up par
 //https://medium.com/@vipinnation/building-language-translation-in-a-react-js-app-with-google-translate-api-45e1236e2bad
 //setting up translator, used code from the website above
 
-
 //https://getcssscan.com/css-buttons-examples<<--- go button css
 
  // https://developers.google.com/maps/documentation/javascript/places <--- used code from documentation for nearby locations code
 
-
 //https://getcssscan.com/css-checkboxes-examples <---- all checkbox css has been taken from here (I did not change class names for checkBox id's and class)
-
 
 // used chatgpt for loading script in js class. (load map function in GMAP component)
 
 // using font awesome for icons https://fontawesome.com/icons/arrow-up?f=classic&s=solid
 
 //// https://getcssscan.com/css-box-shadow-examples <----- border shadow taken from here
+
+// https://blog.hubspot.com/website/html-slider <--- used input slider css
+
+//https://danklammer.com/articles/simple-css-toggle-switch/ <---- toggle css taken from here
