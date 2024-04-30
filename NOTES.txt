@@ -22,3 +22,5 @@
 // https://blog.hubspot.com/website/html-slider <--- used input slider css
 
 //https://danklammer.com/articles/simple-css-toggle-switch/ <---- toggle css taken from here
+
+//https://www.visualcrossing.com <---- weather api used
