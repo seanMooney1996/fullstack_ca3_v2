@@ -8,10 +8,8 @@ export default class VideoHolder extends React.Component {
         super(props)
 
         const textItems = new Map([
-            ["h1", "A one stop shop to find some\n" +
-            "                        quality amenities while you enjoy your stay for\n" +
-            "                        Paris 2024!"],
-            ["p", "Supporting the upcoming Paris 2024 Olympics."]
+            ["h1", "SUMMER OLYMPICS 2024"],
+            ["p", "For everything olympics"]
         ])
 
         this.state = {
@@ -20,12 +18,7 @@ export default class VideoHolder extends React.Component {
 
     }
     componentDidMount() {
-        const textItems = new Map([
-            ["h1", "A one stop shop to find some\n" +
-            "                        quality amenities while you enjoy your stay for\n" +
-            "                        Paris 2024!"],
-            ["p", "Supporting the upcoming Paris 2024 Olympics."]
-        ])
+        const textItems = this.state.textItems
 
         this.props.translateAll(textItems).then(translatedTextItems => {
             this.setState({ textItems: translatedTextItems });
