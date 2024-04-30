@@ -21,8 +21,18 @@ export default class App extends React.Component {
          this.state = {
              language: sessionStorage.getItem('language'),
              componentToLoad: sessionStorage.getItem('component'),
+             preLoadWithSearch:""
          }
     }
+
+    componentDidMount() {
+    }
+
+    preLoadMap = (searchItem) => {
+        this.changeComponentToRender("Gmap")
+        this.setState({preLoadWithSearch:searchItem})
+     }
+
 
     changeLanguage = (lang) => {
         sessionStorage.setItem('language', lang);
@@ -67,8 +77,8 @@ export default class App extends React.Component {
                 <NavBar  changeComponentToRender={this.changeComponentToRender}  changeLanguage={this.changeLanguage}  translateAll={this.translateAll} language={this.state.language}></NavBar>
             <div className="sm_app">
 
-                {this.state.componentToLoad === "Home" ?<VideoHolder   changeComponentToRender={this.changeComponentToRender} translateAll={this.translateAll} language={this.state.language} ></VideoHolder>: null}
-                {this.state.componentToLoad === "Gmap" ?<GMap  changeComponentToRender={this.changeComponentToRender}  translateAll={this.translateAll} language={this.state.language} ></GMap>: null}
+                {this.state.componentToLoad === "Home" ?<VideoHolder preLoadMap={this.preLoadMap}  changeComponentToRender={this.changeComponentToRender} translateAll={this.translateAll} language={this.state.language} ></VideoHolder>: null}
+                {this.state.componentToLoad === "Gmap" ?<GMap  preLoadSearch={this.state.preLoadWithSearch} changeComponentToRender={this.changeComponentToRender}  translateAll={this.translateAll} language={this.state.language} ></GMap>: null}
 
             </div>
             </div>

@@ -9,6 +9,31 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="../components/App.js" type="text/babel"></script>
 
+
+    <link rel="manifest" href="./manifest.json">
+
+    <!-- ios support -->
+    <link rel="icon" href="../icons/icon-256x256.png" type="image/png">
+    <link rel="apple-touch-icon" href="../icons/icon-256x256.png">
+    <meta name="msapplication-TileImage" content="../icons/icon-256x256.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="theme-color" content="white">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Olympics Map">
+
+    <script>
+      window.addEventListener('load', () =>
+      {
+        if ("serviceWorker" in navigator)
+        {
+          navigator.serviceWorker.register("/sw.bundle.js")
+        }
+      })
+    </script>
+
+
+
 <!--    using font awesome for icons https://fontawesome.com/icons/arrow-up?f=classic&s=solid-->
     <script src="https://kit.fontawesome.com/cc94050b18.js" crossorigin="anonymous"></script>
 
@@ -35,10 +60,10 @@
     <link rel="stylesheet" type="text/css" href="CSS/mainStyles.css">
     <title>React App</title>
 <!--    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD106Ay0bch9-eZ5sXYm1kEFjCelf3N-Gg&loading=async&libraries=places,marker" defer></script>-->
-  <script defer src="main.js"></script></head>
+  </head>
   <body>
     <div id="root">
 
     </div>
-  </body>
+  <script defer src="app.bundle.js"></script><script defer src="sw.bundle.js"></script></body>
 </html>

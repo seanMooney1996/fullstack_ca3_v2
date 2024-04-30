@@ -1,20 +1,20 @@
 @import "colorScheme";
 @import "Mixin";
 .sm_navHolder {
-  width:100%;
-  display:flex;
-  justify-content: space-between;
+  width: 100%;
+  display: flex;
+  justify-content: center;
   position: relative;
   align-content: center;
   flex-wrap: wrap;
-  flex-direction: row;
-  background-color: $white;
+  flex-direction: row-reverse;
+  background-color: #ffffff;
   align-items: center;
   @include borderShadowStrong();
- min-height:10vh;
-  max-height:10vh;
-  height:10vh;
-  z-index:3;
+  min-height: 10vh;
+  max-height: 10vh;
+  height: 10vh;
+  z-index: 3;
 }
 
 .sm_navMenuButton {
@@ -95,6 +95,8 @@ width:85vw;
   height:100%;
   width: 15vw;
   display: flex;
+  position:absolute;
+  right:0;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -108,4 +110,8 @@ width:85vw;
       margin:0;
     }
   }
+}
+.sm_tempHold{
+  position:absolute;
+  left:12px;
 }

@@ -11,7 +11,7 @@
     @include menuPhone()
   }
   .sm_navLogo{
-    width:60vw;
+    margin-right:15%;
   }
 
   .sm_fill{
@@ -22,6 +22,9 @@
   }
   .sm_navMenuButton {
     width: 40vw;
+  }
+  .sm_displayIfLarge{
+    display:none;
   }
 }
 

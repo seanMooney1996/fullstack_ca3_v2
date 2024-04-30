@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from "../images/Paris2024_OlyEmbleme_RVB_Poly_2021.png"
+import logo2 from "../images/2024_Summer_Olympics_text_logo.png"
 export default class NavBar extends React.Component {
     constructor(props) {
         super(props)
@@ -21,12 +22,20 @@ export default class NavBar extends React.Component {
         this.state = {
             menuOpen:false,
             menuItem:"Nav",
-            textItems:textItems
+            textItems:textItems,
+            currentTemp: "",
+            conditions: ""
         }
 
     }
 
     componentDidMount() {
+
+        let currentTemp;
+        let conditions;
+        let url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/paris?unitGroup=metric&key=H5VAUUMZTHJ6T54PGKRHBA6CV&contentType=json`;
+
+
             const textItems = new Map([
                 ["home", "Home"],
                 ["map", "Map"],
@@ -42,8 +51,22 @@ export default class NavBar extends React.Component {
                 ["chinese", "Chinese"],
                 ["title", "Olympics with logo"]
             ])
-            this.props.translateAll(textItems).then(r =>
-            this.setState({textItems:r}) )
+        this.props.translateAll(textItems)
+            .then(r => {
+                this.setState({ textItems: r });
+                fetch(url)
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data)
+                        currentTemp = data.currentConditions.temp;
+                        conditions = data.currentConditions.conditions
+                        console.log(currentTemp)
+                        console.log(conditions)
+                        this.setState({currentTemp:currentTemp, conditions:conditions})
+                    })
+            })
     }
 
     clickOpenMenu = (menuType)=> {
@@ -102,9 +125,14 @@ export default class NavBar extends React.Component {
 
         return (
             <div className="sm_navHolder">
+
+                <div className ="sm_tempHold">
+                    <p className="sm_displayIfLarge">Current Conditions Paris</p>
+                    <p>{this.state.currentTemp}&deg;C</p>
+                    <p>{this.state.conditions}</p>
+                </div>
             <div className ="sm_navLogo">
-                <p></p>
-                <img src={logo} className="sm_logo" alt="" height="100%"/>
+                <img src={logo2} className="sm_logo" alt="" height="80%"/>
             </div>
                 <div className="sm_navMenuButton">
                     <div  onClick={() => this.clickOpenMenu("Lang")} ><p>{this.state.textItems.get("lang")}</p></div>

@@ -36,7 +36,7 @@ export default class VideoHolder extends React.Component {
                     <p>{this.state.textItems.get("p")}</p>
                 </div>
 
-                <div className="sm_holdImageSlider"><ImageSlider></ImageSlider></div>
+                <div className="sm_holdImageSlider"><ImageSlider preLoadMap={this.props.preLoadMap}></ImageSlider></div>
             </div>
         )
     }

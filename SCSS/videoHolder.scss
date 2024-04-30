@@ -6,11 +6,11 @@
   padding:10px;
 }
 .sm_videoHolderContainer {
-  height:90vh;
+  height:100%;
   display:flex;
   align-items: center;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   video {
     height:100%;
     width:100%;
@@ -23,6 +23,7 @@
 .sm_textContent{
   border-radius: 20px;
   margin-top: 5%;
+  margin-bottom:5%;
   z-index:2;
   max-width:80%;
   display:flex;
@@ -31,12 +32,12 @@
  p{
   @include textSpacing();
    display:inline-block;
-   font-size:1.5em;
+   text-align:center;
+   font-size:1.6em;
  }
   h1 {
     @include textSpacing();
-    font-size:2.2em;
-    display:inline-block;
+    font-size:2.7em;
     text-align:center;
     font-weight: bold;
     color:#d5c46c;
@@ -53,7 +54,7 @@
   display:flex;
   z-index:2;
   align-items: center;
-  margin-bottom:10%;
+  margin-bottom:20%;
 }
 .sm_slider {
   appearance: none;

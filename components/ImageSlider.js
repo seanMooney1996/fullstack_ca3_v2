@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React from 'react';
 
 //***** Swiper modules*****/
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -23,8 +23,6 @@ export default class ImageSlider extends React.Component {
             isSlidesRendered: false
         }
 
-        // using timeout
-        this.resizeTimeout = null;
     }
 
 
@@ -72,10 +70,14 @@ export default class ImageSlider extends React.Component {
             slidesPerView = 1;
             spacing = ((5 / 100) * parentWidth);
         } else if (parentWidth < 800) {
+            slidesPerView = 2;
+            spacing = ((1.7 / 100) * parentWidth);
+        }
+        else if (parentWidth < 1000) {
             slidesPerView = 3;
             spacing = ((1.7 / 100) * parentWidth);
-        } else if (parentWidth < 1200) {
-            slidesPerView = 4;
+        }else if (parentWidth < 1200) {
+            slidesPerView = 3;
             spacing = ((0.85 / 100) * parentWidth);
         } else {
             slidesPerView = 4;
@@ -88,6 +90,47 @@ export default class ImageSlider extends React.Component {
     }
 
     render() {
+
+        let hotels = (
+            <div className="sm_sliderContainerInner">
+                <img className="sm_imageInSlider" src="/images/hotelParis.jpg"></img>
+                <div className="sm_navOptButton sm_swiperButton" onClick={() => this.props.preLoadMap("Hotels")}>Find Hotels</div>
+            </div>
+            )
+        let information = (
+            <div className="sm_sliderContainerInner">
+                <img className="sm_imageInSlider" src="/images/infoCenter.jpg"></img>
+                <div className="sm_navOptButton sm_swiperButton"  onClick={() => this.props.preLoadMap("Info")}> Find Info Centers</div>
+            </div>
+        )
+
+        let food = (
+            <div className="sm_sliderContainerInner">
+                <img className="sm_imageInSlider" src="/images/foodParis.jpg"></img>
+"                <div className="sm_navOptButton sm_swiperButton"  onClick={() => this.props.preLoadMap("Food")}>Find Food</div>
+"            </div>
+        )
+
+
+        let attractions = (
+            <div className="sm_sliderContainerInner">
+                <img className="sm_imageInSlider" src="/images/attractions.jpg"></img>
+                <div className="sm_navOptButton sm_swiperButton"  onClick={() => this.props.preLoadMap("Attractions")}>Find Tourist Attractions</div>
+            </div>
+        )
+
+        let bars = (
+            <div className="sm_sliderContainerInner">
+                <img className="sm_imageInSlider" src="/images/barsParis.jpg"></img>
+                <div className="sm_navOptButton sm_swiperButton"  onClick={() => this.props.preLoadMap("Bars")}>Find Bars</div>
+            </div>
+        )
+        let merchandise = (
+            <div className="sm_sliderContainerInner">
+                <img className="sm_imageInSlider" src="/images/merchandise.jpeg"></img>
+                <div className="sm_navOptButton sm_swiperButton"  onClick={() => this.props.preLoadMap("Merchandise")} >Find Merchandise</div>
+            </div>
+        )
         return (
             <div id="sm_imageSliderHolder">
                 <Swiper ref={this.swiperRef}
@@ -95,13 +138,12 @@ export default class ImageSlider extends React.Component {
                         centeredSlides={true}
                         modules={[Navigation]} className="sm_Swiper"
                         onSlideChangeTransitionEnd={() => this.setState({isSlidesRendered: true})}>
-                    <SwiperSlide className="sm_swiperSlide">Slide 1</SwiperSlide>
-                    <SwiperSlide className="sm_swiperSlide">Slide 2</SwiperSlide>
-                    <SwiperSlide className="sm_swiperSlide">Slide 3</SwiperSlide>
-                    <SwiperSlide className="sm_swiperSlide">Slide 4</SwiperSlide>
-                    <SwiperSlide className="sm_swiperSlide">Slide 5</SwiperSlide>
-                    <SwiperSlide className="sm_swiperSlide">Slide 6</SwiperSlide>
-                    <SwiperSlide className="sm_swiperSlide">Slide 7</SwiperSlide>
+                    <SwiperSlide className="sm_swiperSlide">{hotels}</SwiperSlide>
+                    <SwiperSlide className="sm_swiperSlide">{information}</SwiperSlide>
+                    <SwiperSlide className="sm_swiperSlide">{food}</SwiperSlide>
+                    <SwiperSlide className="sm_swiperSlide">{attractions}</SwiperSlide>
+                    <SwiperSlide className="sm_swiperSlide">{bars}</SwiperSlide>
+                    <SwiperSlide className="sm_swiperSlide">{merchandise}</SwiperSlide>
                 </Swiper>
             </div>
         )

@@ -42,7 +42,7 @@ export default class GMap extends React.Component {
             ["Changedyourlodginglocationto", "Changed your lodging location to"],
             ["addedtoroutelist", "added to route list"],
             ["Information Desk", "Information Desk"],
-            ["Zoo", "Zoo"],
+            ["Wildlife", "Wildlife"],
             ["Night Club", "Night Club"],
             ["Movie Theatres", "Movie Theatres"],
             ["Cafe", "Cafe"],
@@ -111,7 +111,8 @@ export default class GMap extends React.Component {
             rangeValue: 100,
             customLocationsSelected: customLocationsSelected,
             searchInRangeOfLodging: false,
-            textItems: textItems
+            textItems: textItems,
+            preLoadMapItem: this.props.preLoadSearch,
         }
 
     }
@@ -209,6 +210,11 @@ export default class GMap extends React.Component {
             this.directionsRenderer.setPanel(document.getElementById("sm_directions"))
             this.hidePointsOfInterest();
             this.doTranslations();
+
+            if (this.state.preLoadMapItem !== ""){
+                this.findPlacesInParis(this.state.preLoadMapItem)
+                this.setState({preLoadMapItem:""})
+            }
         }
     }
 
@@ -259,6 +265,8 @@ export default class GMap extends React.Component {
     }
     // https://developers.google.com/maps/documentation/javascript/places <--- used documentation for nearby search code
     findPlacesInParis = (keyword) => {
+
+        console.log("in search paris")
         this.closeMenu()
         let trueTags = [];
 
@@ -576,7 +584,7 @@ export default class GMap extends React.Component {
             <div className="sm_categoryItems">
                 <div className="sm_categoryHolders">
                     <div className="sm_filterCheckBox">
-                        <div className="sm_labelCheckBox"><p>{this.state.textItems.get("Zoo")}</p></div>
+                        <div className="sm_labelCheckBox"><p>{this.state.textItems.get("Wildlife")}</p></div>
                         <div className="checkbox-wrapper-19">
                             <input type="checkbox" id="sm_zooCheckBox" checked={filterTypes.zoo} onChange={() => {
                             }} onClick={() => this.changeCheck("zoo")}/>
