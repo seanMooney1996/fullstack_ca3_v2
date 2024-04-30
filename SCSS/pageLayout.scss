@@ -17,13 +17,11 @@ body {
 }
 .sm_pageContain {
   @include fillParent();
-  max-height:100vh;
-  min-height:100vh;
+@include maxHeightWidthLayout();
   overflow: hidden;
   max-width: 100vw;
 }
 #root{
-  max-height:100vh;
-  max-width: 100vw;
+  @include maxHeightWidthLayout();
   overflow: hidden;
 }

@@ -2,8 +2,7 @@
 @import "Mixin";
 .sm_navHolder {
   width: 100%;
-  display: flex;
-  justify-content: center;
+  @include flexCenterAll();
   position: relative;
   align-content: center;
   flex-wrap: wrap;
@@ -21,9 +20,7 @@
   right:0;
 }
 .sm_navLogo {
-  display:flex;
-  align-items: center;
-  justify-content: center;
+  @include flexCenterAll();
   p{
     font-size: 30px;
     margin:0;
@@ -98,12 +95,9 @@ width:85vw;
   position:absolute;
   right:0;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  @include flexCenterAll();
   div {
-    display:flex;
-    align-items: center;
-    justify-content: center;
+    @include flexCenterAll();
     text-align-all: center;
     height:40%;
     p{

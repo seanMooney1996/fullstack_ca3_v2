@@ -1,4 +1,5 @@
 @import "colorScheme";
+@import "Mixin";
 #sm_imageSliderHolder {
   width:100%;
   min-height:100%;
@@ -32,9 +33,7 @@
   max-width: 95%;
   min-height: 85%;
   border-radius: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flexCenterAll();
 }
 .sm_swiperButton{
   height:80px !important;

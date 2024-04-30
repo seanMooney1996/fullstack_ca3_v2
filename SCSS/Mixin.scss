@@ -20,3 +20,12 @@
 @mixin transitionHeight(){
   transition: height 0.5s ease;
 }
+@mixin flexCenterAll() {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+@mixin maxHeightWidthLayout(){
+  max-height:100vh;
+  min-height:100vh;
+}
